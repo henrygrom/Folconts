@@ -16,17 +16,18 @@ class Folder:
         return self._folder_path
     
     # Verify if the path exists
-    # Setter for folder_path
     @folder_path.setter
     def folder_path(self, folder_path):
         if not folder_path.exists:
             raise ValueError("The specified path does not exist.")
+        self._folder_path = folder_path
 
 
 class File:
     def __init__(self, files: list[str]) -> list[str]:
         self.files = files
 
+    # Verify if the file exists
     @property
     def files(self):
         return self._files
@@ -34,12 +35,15 @@ class File:
     @files.setter
     def files(self, files):
         validated_files = []
-
         for file in files:
             file = Path(file)
-            if not file.is_file():
-                raise ValueError("There was something wrong with the file.")
-            validated_files.append(file)
+            try:
+                if not file.is_file():
+                    raise ValueError("There was something wrong with the file.")
+                validated_files.append(file)
+            
+            except ValueError as e:
+                continue
 
         self._files = validated_files
 
@@ -65,12 +69,12 @@ def get_metadata(files: list[str]) -> list[dict]:
 
     return [
             {
-                "file name": file.name,
+                "path": file.resolve().parent,
+                "parent folder": file.resolve().parent.name,
+                "file name": file.stem,
                 "file extension": file.suffix, 
-                "file size": file.stat().st_size,
                 "last modified": datetime.fromtimestamp(file.stat().st_mtime).strftime("%m/%d/%Y %H:%M"),
-                "parent folder": file.parent,
-                "path": file.resolve()
+                "file size": file.stat().st_size
             } 
             for file in files
     ]
