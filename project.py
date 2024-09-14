@@ -18,9 +18,12 @@ class Folder:
     # Verify if the path exists
     @folder_path.setter
     def folder_path(self, folder_path):
-        if not folder_path.exists:
-            raise ValueError("The specified path does not exist.")
-        self._folder_path = folder_path
+        try:
+            if not folder_path.exists():
+                raise ValueError
+            self._folder_path = folder_path
+        except ValueError:
+            sys.exit("The specified path does not exist.")
 
 
 class File:
@@ -49,10 +52,23 @@ class File:
 
 
 def main():
+    check_argc()
     test = Folder(sys.argv[1], sys.argv[2])
     files = get_files(test)
     files = get_metadata(files)
     export_contents(files)
+
+
+def check_argc():
+    try:
+        if len(sys.argv) != 3:
+            raise IndexError
+
+        elif not sys.argv[2].endswith(".csv"):
+            raise ValueError
+
+    except (IndexError, ValueError):
+        sys.exit("Usage: python project.py [Folder/Path/] [Output].csv")
 
 
 def get_files(folder_path: str) -> list[dict]:
