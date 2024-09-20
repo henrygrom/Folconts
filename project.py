@@ -52,9 +52,9 @@ class File:
 
 
 def main():
-    check_argc()
-    test = Folder(sys.argv[1], sys.argv[2])
-    files = get_files(test)
+    path, save_file = check_argc()
+    report = Folder(path, save_file)
+    files = get_files(report)
     files = get_metadata(files)
     export_contents(files)
 
@@ -66,6 +66,9 @@ def check_argc():
 
         elif not sys.argv[2].endswith(".csv"):
             raise ValueError
+        
+        else:
+            return sys.argv[1], sys.argv[2]
 
     except (IndexError, ValueError):
         sys.exit("Usage: python project.py [Folder/Path/] [Output].csv")
