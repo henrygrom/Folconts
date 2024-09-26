@@ -7,9 +7,8 @@ from pathlib import Path
 
 
 class Folder:
-    def __init__(self, folder_path: str, save_file: str) -> None:
+    def __init__(self, folder_path: str) -> None:
         self.folder_path = Path(folder_path)
-        self.savefile = save_file
 
     @property
     def folder_path(self):
@@ -22,6 +21,7 @@ class Folder:
             if not folder_path.exists():
                 raise ValueError
             self._folder_path = folder_path
+        
         except ValueError:
             sys.exit("The specified path does not exist.")
 
@@ -53,10 +53,11 @@ class File:
 
 def main():
     path, save_file = check_argc()
-    report = Folder(path, save_file)
+    report = Folder(path)
     files = get_files(report)
     files = get_metadata(files)
     export_contents(files)
+    print("Succesful!")
 
 
 def check_argc():
@@ -85,37 +86,49 @@ def get_metadata(files: list[str]) -> list[dict]:
     # Loop through the contents of the file
     # Get the metadata of files
     # Store the metadata
-
-    return [
-            {
-                "path": file.resolve().parent,
-                "parent folder": file.resolve().parent.name,
-                "file name": file.stem,
-                "file extension": file.suffix, 
-                "last modified": datetime.fromtimestamp(file.stat().st_mtime).strftime("%m/%d/%Y %H:%M"),
-                "file size": file.stat().st_size
-            } 
-            for file in files
-    ]
+    try:
+        return [
+                {
+                    "path": file.resolve().parent,
+                    "parent folder": file.resolve().parent.name,
+                    "file name": file.stem,
+                    "file extension": file.suffix, 
+                    "last modified": datetime.fromtimestamp(file.stat().st_mtime).strftime("%m/%d/%Y %H:%M"),
+                    "file size": file.stat().st_size
+                } 
+                for file in files
+        ]
+    except PermissionError:
+        print("Error: Permission Denied")
    
 
-def export_contents(files):
-    with open(sys.argv[2], "w", newline="") as save_file:
-        fieldnames = ["LOCATION","PARENT FOLDER","FILE NAME","FILE EXTENSION","LAST MODIFIED","SIZE"]
+def export_contents(files: list[str]):
+    
+    try:
+        with open(sys.argv[2], "w", newline="") as save_file:
+            
+            fieldnames = ["LOCATION","PARENT FOLDER","FILE NAME","FILE EXTENSION","LAST MODIFIED","SIZE"]
 
-        writer = csv.DictWriter (save_file, fieldnames=fieldnames)
-        writer.writeheader()
-        for file in files:
-            writer.writerow(
-                {
-                    "LOCATION": file["path"],
-                    "PARENT FOLDER": file["parent folder"],
-                    "FILE NAME": file["file name"],
-                    "FILE EXTENSION": file["file extension"],
-                    "LAST MODIFIED": file["last modified"],
-                    "SIZE": file["file size"]
-                }
-            )
+            writer = csv.DictWriter (save_file, fieldnames=fieldnames)
+            writer.writeheader()
+            for file in files:
+                writer.writerow(
+                    {
+                        "LOCATION": file["path"],
+                        "PARENT FOLDER": file["parent folder"],
+                        "FILE NAME": file["file name"],
+                        "FILE EXTENSION": file["file extension"],
+                        "LAST MODIFIED": file["last modified"],
+                        "SIZE": file["file size"]
+                    }
+                )
+    except PermissionError:
+        print("Error: Permission Denied")
+    except csv.Error as e:
+        print("CSV Error: {e}")
+    except OSError as e:
+        print("OS Error: {e}")
+
 
 
 if __name__ == "__main__":
