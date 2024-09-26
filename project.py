@@ -1,5 +1,4 @@
 import sys
-import os
 import csv
 
 from datetime import datetime
@@ -23,7 +22,7 @@ class Folder:
             self._folder_path = folder_path
         
         except ValueError:
-            sys.exit("The specified path does not exist.")
+            sys.exit("The specified path does not exist")
 
 
 class File:
@@ -32,17 +31,17 @@ class File:
 
     # Verify if the file exists
     @property
-    def files(self):
+    def files(self) -> list:
         return self._files
     
     @files.setter
-    def files(self, files):
+    def files(self, files) -> None:
         validated_files = []
         for file in files:
             file = Path(file)
             try:
                 if not file.is_file():
-                    raise ValueError("There was something wrong with the file.")
+                    raise ValueError("There was something wrong with the file")
                 validated_files.append(file)
             
             except ValueError as e:
@@ -51,7 +50,7 @@ class File:
         self._files = validated_files
 
 
-def main():
+def main() -> None:
     path, save_file = check_argc()
     report = Folder(path)
     files = get_files(report)
@@ -60,7 +59,7 @@ def main():
     print("Succesful!")
 
 
-def check_argc():
+def check_argc() -> tuple[str, str]:
     try:
         if len(sys.argv) != 3:
             raise IndexError
@@ -99,10 +98,10 @@ def get_metadata(files: list[str]) -> list[dict]:
                 for file in files
         ]
     except PermissionError:
-        print("Error: Permission Denied")
-   
+        print("Error: File Permission Denied")
+  
 
-def export_contents(files: list[str]):
+def export_contents(files: list[str]) -> None:
     
     try:
         with open(sys.argv[2], "w", newline="") as save_file:
@@ -123,12 +122,11 @@ def export_contents(files: list[str]):
                     }
                 )
     except PermissionError:
-        print("Error: Permission Denied")
-    except csv.Error as e:
-        print("CSV Error: {e}")
-    except OSError as e:
-        print("OS Error: {e}")
-
+        sys.exit("Error: File Permission Denied")
+    except csv.Error:
+        sys.exit("CSV Error: Make sure the arguments are correct")
+    except OSError:
+        sys.exit("OS Error: Make sure the arguments are correct")
 
 
 if __name__ == "__main__":
