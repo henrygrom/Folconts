@@ -9,7 +9,7 @@ from pathlib import Path
 from project import check_argc, get_metadata, Folder, export_contents
 
 
-def test_check_argc_valid(monkeypatch):
+def test_check_argc_valid(monkeypatch: pytest.MonkeyPatch):
 
     monkeypatch.setattr(sys, "argv", ["project.py", "folder_path_arg", "csv_file_arg.csv"])
 
@@ -19,7 +19,7 @@ def test_check_argc_valid(monkeypatch):
     assert save_file == "csv_file_arg.csv"
 
 
-def test_check_argc_invalid_arguments(monkeypatch):
+def test_check_argc_invalid_arguments(monkeypatch: pytest.MonkeyPatch):
     # Invalid incomplete arguments
     monkeypatch.setattr(sys, "argv", ["project.py", "folder_path_arg"])
 
@@ -39,7 +39,7 @@ def test_check_argc_invalid_arguments(monkeypatch):
         folder_path_checker = Folder(invalid_path)
 
 
-def test_get_metadata(tmp_path):
+def test_get_metadata(tmp_path: Path):
     # Create temporary files
     # Verify correct numbers of element passed
     # Verify data
@@ -68,7 +68,7 @@ def test_get_metadata(tmp_path):
     assert result[1]["file size"] == file2.stat().st_size
 
 
-def test_export_contents(monkeypatch, tmp_path):
+def test_export_contents(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     # Create a temporary CSV file
     csv_file = tmp_path / "output.csv"
 
