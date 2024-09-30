@@ -34,3 +34,31 @@ The `get_metadata()` function takes the list of files obtained from get_files() 
 
 7. `export_contents()`:
 The `export_contents()` function generates the final CSV report. It takes the list of file metadata and writes it to a CSV file, which is then saved to the location specified by the user. This function formats the data into a structured report.
+
+### Installation
+1. Clone the repository:
+  ```
+   git clone https://github.com/henrygrom/Folconts.git
+  ```
+2. Go to project directory:
+   ```
+   cd Folconts
+   ```
+3. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+### Usage
+To run the program, use the following command in your terminal:
+```
+python project.py <folder_path> <output_csv_file>
+```
+For example:
+```
+python project.py /home/user/documents report.csv
+```
+This command will process all the files in /home/user/documents and output a CSV report named report.csv containing the extracted metadata.
+
+
+## All thanks to CS50 team!
