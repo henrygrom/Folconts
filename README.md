@@ -1,5 +1,5 @@
 # Folconts
-#### Video Demo:
+#### Video Demo: https://youtu.be/ARKToB96TjU
 
 ### What does this program do?
 Folconts is a python cli application project that extracts folder contents metadata and generates a CSV report of it. The main goal of  this project is to simplify the process of gathering detailed information about files within a specified folder, including file paths, types, sizes, and other metadata. This can be especially useful for tasks such as data organization, file management, and project audits.
